@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multi-Layer map (ver.1.10)</title>
+    <meta charset = "utf-8" />
+    <link rel = "stylesheet" href = "https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+    <script src = "https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+</head>
+
+<script type="text/javascript" src="test_folder/test.js"></script>
+
+    
+
+
+<script>        //ベースにするMAPデータ（API）
+    function init() {
+    var Basic_Map = new Array();
+    Basic_Map[ 0 ] = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        attribution: "<a href='https://developers.google.com/maps/documentation' target='_blank'>Google Map</a>"
+    });
+    Basic_Map[ 1 ] = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+        subdomains: ['mt0','mt1','mt2','mt3'],
+        attribution: "<a href='https://developers.google.com/maps/documentation' target='_blank'>Google Map</a>"
+    });
+    Basic_Map[ 2 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Basic_Map[ 3 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Basic_Map[ 4 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Basic_Map[ 5 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/sekishoku/{z}/{x}/{y}.png', {
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Basic_Map[ 6 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Basic_Map[ 7 ] = L.tileLayer('*set map data*', {
+        attribution: '*set map data*',
+    });
+    Basic_Map[ 8 ] = L.tileLayer('*set map data*', {
+        attribution: '*set map data*'
+    });
+    Basic_Map[ 9 ] = L.tileLayer('set map data', {
+        attribution: '*set map data*'
+    });
+    
+
+        var map_201 = L.map('map_201').setView([35.69630693763192, 139.82399745420204], 14);
+        map_201.addLayer( Basic_Map[ 0 ] );
+
+    var baseMap = {
+        "Google Map": Basic_Map[ 0 ],
+        "Google Map satellite": Basic_Map[ 1 ],
+        "国土地理院 標準地図": Basic_Map[ 2 ],
+        "国土地理院 淡色地図": Basic_Map[ 3 ],
+        "国土地理院 空中写真": Basic_Map[ 4 ],
+        "国土地理院 赤色立体地図(10mMESH)": Basic_Map[ 5 ],
+        "国土地理院 白地図": Basic_Map[ 6 ],
+        "_***_": Basic_Map[ 7 ],
+        "_***_": Basic_Map[ 8 ],
+        "_***_": Basic_Map[ 9 ],
+    };
+
+    // オーバーレイするMAPデータ（API）
+    var Over_Layer = new Array();
+    Over_Layer[ 0 ] = L.tileLayer('*set map data*', {
+        attribution: '*set map data*'
+    });
+    Over_Layer[ 1 ] = L.tileLayer('https://gbank.gsj.jp/seamless/v2/api/1.2.1/tiles/{z}/{y}/{x}.png?layer=glfs', {
+	opacity: 0.5, maxNativeZoom: 13,
+	attribution: '日本シームレス地質図V2: GSJ/AIST'
+    });
+    Over_Layer[ 2 ] = L.tileLayer('https://jmapweb3v.bosai.go.jp/map/xyz/landslide/{z}/{x}/{y}.png', {
+        opacity: 0.5,
+        attribution: '地すべり地形分布図: 防災科学技術研究所'
+    });
+    Over_Layer[ 3 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+        opacity: 0.5,
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Over_Layer[ 4 ] = L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
+        opacity: 0.7,
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Over_Layer[ 5 ] = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/afm/{z}/{x}/{y}.png', {
+        opacity: 0.5,
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+    Over_Layer[ 6 ] = L.tileLayer('https://aginfo.cgk.affrc.go.jp/ws/tmc/1.0.0/Tokyo5000-900913-L/{z}/{x}/{y}.png', {
+        opacity: 0.5, maxZoom: 18,
+        attribution: " <a href='https://aginfo.cgk.affrc.go.jp/tmc/index.html.ja'>"
+    });
+    Over_Layer[ 7 ] = L.tileLayer('*_set your data_*', {
+        opacity: 0.5,
+        attribution: "_***_"
+    });
+
+    var overLay_201 = {
+        "_***_": Over_Layer[ 0 ],
+        "産総研 シームレス地質図v2": Over_Layer[ 1 ],
+        "防災科研 地すべり地形分布図": Over_Layer[ 2 ],
+        "地理院 陰影起伏図": Over_Layer[ 3 ],
+        "地理院 色別標高図": Over_Layer[ 4 ],
+        "都市圏活断層図": Over_Layer[ 5 ],
+        "農研機構 (関東)歴史的農業環境": Over_Layer[ 6 ],
+        "_***_": Over_Layer[ 7 ],
+    };
+    L.control.layers(baseMap, overLay_201).addTo(map_201);
+}
+
+//クリック地点の緯度・経度・標高を取得する
+map.on('click',onMapClick);
+var clickMaker = null;
+function onMapClick(e) {
+    if (clickMaker) {
+        map.removeLayer(clickMaker);
+    }
+    lat = e.lating.lat;
+    lng = e.lating.lng;
+    
+    //地理院の地図サーバーから標高を返す
+    // http://maps.gsj.go.jp/development/elevation_s.html
+    var src = 'https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon' + lng + '&lat=' + lat;
+}
+
+//あらかじめMakerを宣言しておく
+let markerTokyo = L.marker([35.658182, 139.702043]);
+
+function tokyo() {
+  //チェックボックスの状態を取得して表示制御
+  let check = document.getElementsByName("checkTokyo")[0];
+  if(check.checked) {
+    markerTokyo.bindPopup("東京").addTo(map);
+  } else {
+    markerTokyo.removeFrom(map);
+  }
+}
+
+let markerKanagawa = null;
+
+function kanagawa(value) {
+  //チェックボックスのonchangeでチェックボックスの選択状態を渡す
+  if(value) {
+    //addToの戻り値がLayer自体なので、それを変数に格納する
+    markerKanagawa = L.marker([35.491354, 139.284143]).bindPopup("神奈川").addTo(map);
+  } else {
+    markerKanagawa.removeFrom(map);
+  }
+}
+
+function chiba() {
+  //Markerを全部取り出して座標に該当するものが配置されているかチェックする
+  let found = false;
+  map.eachLayer(function(layer) {
+    if (layer instanceof L.Marker) {
+      if(layer.getLatLng().equals(L.latLng(35.335416, 140.183252))) {
+        found = true;
+        layer.removeFrom(map);
+      }
+    }
+  });
+  //なければ追加
+  if(!found) {
+    L.marker([35.335416, 140.183252]).bindPopup("千葉").addTo(map);
+  }
+}
+
+</script>
+</head>
+
+<body onload="init()">
+    <div id="map_201" style="width: 100%; height: 800px; border: solid 1px"></div>
+    <script>    
+
+
+    </script>
+</body>
+</html>
